@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام التحكم بالإنترنت - MikroTik</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #1a252f;
+            --success: #2ecc71;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a2980, #26d0ce);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: var(--dark);
+        }
+
+        .container {
+            display: flex;
+            width: 100%;
+            max-width: 1200px;
+            height: 90vh;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            animation: fadeIn 0.8s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .side-panel {
+            flex: 1;
+            background: var(--primary);
+            padding: 40px;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .side-panel h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            border-right: 5px solid var(--secondary);
+            padding-right: 15px;
+        }
+
+        .side-panel p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+
+        .features {
+            list-style: none;
+            margin-top: 30px;
+        }
+
+        .features li {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .features i {
+            color: var(--success);
+            margin-left: 10px;
+            font-size: 1.2rem;
+        }
+
+        .login-panel {
+            flex: 1;
+            background: white;
+            padding: 60px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo i {
+            font-size: 4rem;
+            color: var(--secondary);
+            margin-bottom: 15px;
+        }
+
+        .logo h1 {
+            color: var(--primary);
+            font-size: 2.2rem;
+        }
+
+        .logo p {
+            color: #7f8c8d;
+            font-size: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .input-with-icon {
+            position: relative;
+        }
+
+        .input-with-icon i {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #bdc3c7;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 15px 45px 15px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s;
+            background-color: #f9f9f9;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--secondary);
+            background-color: white;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+
+        .speed-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .speed-option {
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background-color: #f9f9f9;
+        }
+
+        .speed-option:hover {
+            border-color: var(--secondary);
+            transform: translateY(-3px);
+        }
+
+        .speed-option.selected {
+            border-color: var(--success);
+            background-color: rgba(46, 204, 113, 0.1);
+            color: var(--success);
+        }
+
+        .speed-option i {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .speed-option .speed {
+            font-weight: 700;
+            font-size: 1.3rem;
+        }
+
+        .speed-option .desc {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+
+        .btn {
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .btn-primary {
+            background-color: var(--secondary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn i {
+            margin-left: 8px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #95a5a6;
+            font-size: 0.9rem;
+        }
+
+        .footer a {
+            color: var(--secondary);
+            text-decoration: none;
+        }
+
+        @media (max-width: 900px) {
+            .container {
+                flex-direction: column;
+                height: auto;
+            }
+            
+            .side-panel, .login-panel {
+                padding: 30px;
+            }
+            
+            .speed-options {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(52, 152, 219, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(52, 152, 219, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(52, 152, 219, 0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- اللوحة الجانبية -->
+        <div class="side-panel">
+            <h2>نظام إدارة الإنترنت</h2>
+            <p>مرحباً بك في لوحة تحكم MikroTik المتطورة. من هنا يمكنك إدارة اشتراكك في الإنترنت، اختيار باقة السرعة المناسبة، والتحكم في إعدادات الشبكة الخاصة بك.</p>
+            
+            <ul class="features">
+                <li><i class="fas fa-check-circle"></i> إدارة سرعة الإنترنت بسهولة</li>
+                <li><i class="fas fa-check-circle"></i> مراقبة الاستهلاك الفعلي</li>
+                <li><i class="fas fa-check-circle"></i> دعم فني على مدار الساعة</li>
+                <li><i class="fas fa-check-circle"></i> واجهة عربية سهلة الاستخدام</li>
+                <li><i class="fas fa-check-circle"></i> تقارير استهلاك مفصلة</li>
+            </ul>
+            
+            <div style="margin-top: auto; font-size: 0.9rem; opacity: 0.8;">
+                <p><i class="fas fa-shield-alt"></i> نظام آمن ومحمي بكلمة مرور قوية</p>
+            </div>
+        </div>
+        
+        <!-- لوحة الدخول -->
+        <div class="login-panel">
+            <div class="logo">
+                <i class="fas fa-wifi"></i>
+                <h1>MikroTik Control</h1>
+                <p>لوحة تحكم مزود الخدمة</p>
+            </div>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username"><i class="fas fa-user"></i> اسم المستخدم</label>
+                    <div class="input-with-icon">
+                        <input type="text" id="username" class="form-control" placeholder="أدخل اسم المستخدم" required>
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label><i class="fas fa-tachometer-alt"></i> اختر سرعة الإنترنت</label>
+                    <div class="speed-options">
+                        <div class="speed-option" data-speed="5">
+                            <i class="fas fa-walking"></i>
+                            <div class="speed">5 Mbps</div>
+                            <div class="desc">للاستخدام الأساسي</div>
+                        </div>
+                        
+                        <div class="speed-option" data-speed="20">
+                            <i class="fas fa-bicycle"></i>
+                            <div class="speed">20 Mbps</div>
+                            <div class="desc">للعائلات الصغيرة</div>
+                        </div>
+                        
+                        <div class="speed-option" data-speed="50">
+                            <i class="fas fa-car"></i>
+                            <div class="speed">50 Mbps</div>
+                            <div class="desc">للأعمال والتطبيقات</div>
+                        </div>
+                        
+                        <div class="speed-option" data-speed="100">
+                            <i class="fas fa-rocket"></i>
+                            <div class="speed">100 Mbps</div>
+                            <div class="desc">للألعاب والبث المباشر</div>
+                        </div>
+                    </div>
+                    <input type="hidden" id="selectedSpeed" name="speed" required>
+                </div>
+                
+                <button type="submit" class="btn btn-primary pulse">
+                    <i class="fas fa-sign-in-alt"></i> الدخول إلى النظام
+                </button>
+            </form>
+            
+            <div class="footer">
+                <p>© 2023 نظام MikroTik للتحكم بالإنترنت. جميع الحقوق محفوظة.</p>
+                <p>للحصول على مساعدة، <a href="#">اتصل بالدعم الفني</a> أو اتصل على 1234567890</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // اختيار سرعة الإنترنت
+        const speedOptions = document.querySelectorAll('.speed-option');
+        const selectedSpeedInput = document.getElementById('selectedSpeed');
+        
+        speedOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                // إزالة التحديد من جميع الخيارات
+                speedOptions.forEach(opt => opt.classList.remove('selected'));
+                
+                // إضافة التحديد للخيار المختار
+                this.classList.add('selected');
+                
+                // حفظ القيمة المختارة
+                const speed = this.getAttribute('data-speed');
+                selectedSpeedInput.value = speed;
+                
+                // إضافة تأثير بسيط
+                this.style.transform = 'scale(1.05)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 300);
+            });
+        });
+        
+        // اختيار افتراضي
+        speedOptions[1].click();
+        
+        // معالجة نموذج الدخول
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const speed = selectedSpeedInput.value;
+            
+            if (!username || !speed) {
+                alert('يرجى إدخال اسم المستخدم واختيار السرعة');
+                return;
+            }
+            
+            // تأثير تحميل
+            const submitBtn = document.querySelector('.btn-primary');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جارٍ الدخول...';
+            submitBtn.disabled = true;
+            
+            // محاكاة اتصال بالخادم
+            setTimeout(() => {
+                // هنا يمكنك إضافة كود الاتصال بالخادم (API)
+                alert(`مرحباً ${username}! تم تسجيل دخولك بنجاح.\nسرعة الإنترنت المختارة: ${speed} Mbps`);
+                
+                // إعادة زر الدخول لحالته الأصلية
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+                
+                // في الواقع، هنا سيتم توجيه المستخدم إلى الصفحة الرئيسية
+                // window.location.href = 'dashboard.html';
+            }, 1500);
+        });
+        
+        // تأثير عند التركيز على حقل الإدخال
+        const inputs = document.querySelectorAll('.form-control');
+        inputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.querySelector('i').style.color = '#3498db';
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.querySelector('i').style.color = '#bdc3c7';
+            });
+        });
+        
+        // إضافة تأثيرات إضافية
+        window.addEventListener('load', function() {
+            const logoIcon = document.querySelector('.logo i');
+            logoIcon.style.transition = 'transform 0.5s';
+            
+            setInterval(() => {
+                logoIcon.style.transform = 'rotate(10deg)';
+                setTimeout(() => {
+                    logoIcon.style.transform = 'rotate(-10deg)';
+                }, 500);
+                setTimeout(() => {
+                    logoIcon.style.transform = 'rotate(0deg)';
+                }, 1000);
+            }, 5000);
+        });
+    </script>
+</body>
+</html>
